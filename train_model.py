@@ -4,6 +4,9 @@ import librosa
 import os
 
 from sklearn.model_selection import train_test_split
+import numpy as np
+import tensorflow as tf
+from tensorflow.keras import layers, models
 
 
 DATASET_PATH = './archive/Data/genres_original'
@@ -83,8 +86,44 @@ def load_data(json_path):
 
 X, y = load_data(JSON_PATH)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 
 X_train = X_train[..., np.newaxis] # add channel dimension for CNN input
 X_test = X_test[..., np.newaxis]
 
+input_shape = (X_train.shape[1], X_train.shape[2], 1) # (time steps, mfcc features, channels)
+
+model = models.Sequential([
+    
+    # layer 1 - convolutional layer: extracts features from the MFCC input
+    layers.Conv2D(32, (3, 3), activation='relu', input_shape=input_shape),
+    layers.MaxPooling2D((3, 3), strides=(2, 2), padding='same'),
+    layers.BatchNormalization(),
+
+    # layer 2 - convolutional layer: extracts more complex features
+    layers.Conv2D(64, (3, 3), activation='relu'),
+    layers.MaxPooling2D((3, 3), strides=(2, 2), padding='same'),
+    layers.BatchNormalization(),
+
+    # layer 3 - convolutional layer: extracts even more complex features
+    layers.Conv2D(128, (2, 2), activation='relu'),
+    layers.MaxPooling2D((2, 2), strides=(2, 2), padding='same'),
+    layers.BatchNormalization(),
+
+    layers.Flatten(),
+
+    # dense layer
+    layers.Dense(64, activation='relu'),
+    layers.Dropout(0.3), # turns off 30% of neurons to prevent memorization
+
+    # output layer
+    layers.Dense(10, activation='softmax') 
+])
+    
+optimizer = tf.keras.optimizers.Adam(learning_rate=0.0001)
+model.compile(optimizer=optimizer,
+              loss='sparse_categorical_crossentropy',
+              metrics=['accuracy'])
+
+model.summary()
+                 
