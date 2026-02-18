@@ -3,6 +3,8 @@ import math
 import librosa
 import os
 
+from sklearn.model_selection import train_test_split
+
 
 DATASET_PATH = './archive/Data/genres_original'
 JSON_PATH = './data.json'
@@ -45,7 +47,7 @@ def save_mfcc(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512, nu
                         start_sample = num_samples_per_segment * s
                         finish_sample = start_sample + num_samples_per_segment
                         
-                        mfcc = librosa.feature.mfcc(signal[start_sample:finish_sample], 
+                        mfcc = librosa.feature.mfcc(y=signal[start_sample:finish_sample], 
                                                     sr=sr, 
                                                     n_fft=n_fft, 
                                                     n_mfcc=n_mfcc, 
@@ -66,3 +68,23 @@ def save_mfcc(dataset_path, json_path, n_mfcc=13, n_fft=2048, hop_length=512, nu
         json.dump(data, fp, indent=4)
     
     print("Data saved to", json_path)
+  
+# uncomment the line to save the MFCC features from the dataset to a JSON file  
+# save_mfcc(DATASET_PATH, JSON_PATH, num_segments=10)
+
+def load_data(json_path):
+    with open(json_path, "r") as fp:
+        data = json.load(fp)
+    
+    X = data["mfcc"]
+    y = data["labels"]
+    
+    return X, y
+
+X, y = load_data(JSON_PATH)
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+X_train = X_train[..., np.newaxis] # add channel dimension for CNN input
+X_test = X_test[..., np.newaxis]
+
