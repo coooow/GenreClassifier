@@ -79,14 +79,17 @@ def load_data(json_path):
     with open(json_path, "r") as fp:
         data = json.load(fp)
     
-    X = data["mfcc"]
-    y = data["labels"]
+    X = np.array(data["mfcc"])
+    y = np.array(data["labels"])
     
     return X, y
 
 X, y = load_data(JSON_PATH)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+X_train = np.array(X_train)
+X_test = np.array(X_test)
 
 X_train = X_train[..., np.newaxis] # add channel dimension for CNN input
 X_test = X_test[..., np.newaxis]
@@ -126,4 +129,10 @@ model.compile(optimizer=optimizer,
               metrics=['accuracy'])
 
 model.summary()
+
+print("Training model...")
+history = model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=30, batch_size=32)
+
+model.save("audio_classifier.keras")
+print("Model saved to audio_classifier.keras")
                  
