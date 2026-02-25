@@ -1,4 +1,4 @@
-# 🎧 AI Audio Classifier
+# 🎧 Genre Classifier
 
 A deep learning system that uses **Computer Vision** and **Convolutional Neural Networks (CNNs)** to accurately classify music genres by "seeing" sound.
 
