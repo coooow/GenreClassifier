@@ -37,8 +37,8 @@ If you want to explore the model on your own machine:
 
 1.  **Clone the Repository**
     ```bash
-    git clone [https://github.com/coooow/GenreClassifier.git](https://github.com/coooow/GenreClassifier.git)
-    cd AudioClassifier
+    git clone https://github.com/coooow/GenreClassifier.git
+    cd GenreClassifier
     ```
 
 2.  **Install Dependencies**
