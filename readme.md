@@ -29,7 +29,7 @@ This project solves that by treating audio classification as an **Image Recognit
 
 This project is hosted on Streamlit. You can access the live version here:
 
-**➡️ [Click to view Live Demo](https://coooow-genreclassifier-app-vhlcp3.streamlit.app/)**
+**➡️ [Click to view Live Demo](https://genreclassifierapp.streamlit.app/)**
 
 **Option 2: Run Locally**
 
